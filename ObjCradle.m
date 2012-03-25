@@ -105,6 +105,12 @@ static ObjCradle *objCradle = nil;
     return [self selectRows:request];
 }
 
+- (void)init:(CouchEmbeddedServer *)server {
+
+
+}
+
+
 - (NSArray *)selectRows:(ASIHTTPRequest *)request {
     NSMutableDictionary *data = [[request responseString] objectFromJSONString];
     NSArray *rows = [data objectForKey:@"rows"];
