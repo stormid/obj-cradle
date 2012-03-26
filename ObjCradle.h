@@ -9,6 +9,11 @@
 #import <CouchCocoa/CouchCocoa.h>
 #import "ASIHTTPRequest.h"
 
+typedef enum {
+    ClientToServer,
+    ServerToClient,
+    BiDirectional,
+} Replication;
 
 @interface ObjCradle : NSObject
 
@@ -18,6 +23,8 @@
 
 @property(nonatomic, retain) CouchEmbeddedServer *server;
 
+@property(nonatomic, copy) NSString *dbName;
+
 - (ObjCradle *)initWithDB:(NSString *)dbName;
 
 - (ASIHTTPRequest *)get:(NSString *)path usingKey:(NSString *)key requestDelegate:(id)requestDelegate;
@@ -25,6 +32,10 @@
 - (ASIHTTPRequest *)put:(NSString *)path withData:(NSDictionary *)data;
 
 - (ASIHTTPRequest *)put:(NSString *)path withData:(NSDictionary *)data requestDelegate:(id)requestDelegate;
+
+- (ASIHTTPRequest *)post:(NSString *)path withData:(NSDictionary *)data;
+
+- (void)replicate:(NSString *)remoteDBUrl replicationType:(Replication)replicationType continous:(BOOL)continuous;
 
 - (ASIHTTPRequest *)delete:(NSString *)path;
 

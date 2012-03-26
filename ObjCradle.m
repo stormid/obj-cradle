@@ -19,11 +19,13 @@ ObjCradleInstaller *installer;
     CouchDatabase *_database;
     id _requestDelegate;
     CouchEmbeddedServer *_server;
+    NSString *_dbName;
 }
 
 @synthesize database = _database;
 @synthesize requestDelegate = _requestDelegate;
 @synthesize server = _server;
+@synthesize dbName = _dbName;
 
 
 static ObjCradle *objCradle = nil;
@@ -42,6 +44,7 @@ static ObjCradle *objCradle = nil;
 
 - (ObjCradle *) initWithDB:(NSString *)dbName {
     if([super init]) {
+        _dbName = dbName;
         installer = [[ObjCradleInstaller alloc] init];
         _server = [installer installCannedDb:dbName];
         return self;
@@ -64,6 +67,10 @@ static ObjCradle *objCradle = nil;
     return [self sendRequest:path withData:data withMethod:@"PUT" usingKey:nil requestDelegate:requestDelegate];
 }
 
+- (ASIHTTPRequest *)post:(NSString *)path withData:(NSDictionary *)data {
+    return [self sendRequest:path withData:data withMethod:@"POST" usingKey:nil requestDelegate:nil];
+}
+
 - (ASIHTTPRequest *)delete:(NSString *)path {
     return [self delete:path requestDelegate:nil];
 }
@@ -72,8 +79,34 @@ static ObjCradle *objCradle = nil;
     return [self sendRequest:path withData:nil withMethod:@"DELETE" usingKey:nil requestDelegate:requestDelegate];
 }
 
+- (void)sendReplicateRequest:(NSString *)source target:(NSString *)target continuous:(BOOL)continuous {
+    NSMutableDictionary *data = [[[NSMutableDictionary alloc] init] autorelease];
+    [data setValue:source forKey:@"source"];
+    [data setValue:target forKey:@"target"];
+    [data setObject:[NSNumber numberWithBool:continuous] forKey:@"continuous"];
+    ASIHTTPRequest *request = [self post:@"_replicate" withData:data];
+}
+
+- (void)replicate:(NSString *)remoteDBUrl replicationType:(Replication)replicationType continous:(BOOL)continuous {
+
+    switch (replicationType) {
+        case ServerToClient:
+            [self sendReplicateRequest:remoteDBUrl target:_dbName continuous:continuous];
+            break;
+        case ClientToServer:
+            [self sendReplicateRequest:_dbName target:remoteDBUrl continuous:continuous];
+            break;
+        case BiDirectional:
+            [self sendReplicateRequest:_dbName target:remoteDBUrl continuous:continuous];
+            [self sendReplicateRequest:remoteDBUrl target:_dbName continuous:continuous];
+            break;
+    }
+}
+
+
+
 - (ASIHTTPRequest *)sendRequest:(NSString *)path withData:(NSDictionary *)data withMethod:(NSString *)method usingKey:(NSString *)key requestDelegate:(id)requestDelegate {
-    NSString *url= [NSString stringWithFormat:@"%@/%@", _database.URL, path];
+    NSString *url= path == @"_replicate" ? [NSString stringWithFormat:@"%@%@", _server.URL, path] : [NSString stringWithFormat:@"%@/%@", _database.URL, path];
     if(key) {
         url = [url stringByAppendingString:[NSString stringWithFormat:@"?key=\"%@\"", key]];
     }
@@ -120,6 +153,7 @@ static ObjCradle *objCradle = nil;
 - (void)dealloc {
     [_requestDelegate release];
     [_server release];
+    [_dbName release];
     [super dealloc];
 }
 
