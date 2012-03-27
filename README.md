@@ -20,7 +20,7 @@ Road Map
 - Configuration to use a Remote Server
 - Configuration to install a blank db on first run
 
-API Documentation
+API Examples
 -----------------
 ###Installing an embedded database from `mydatabase.couch` file resource
 
