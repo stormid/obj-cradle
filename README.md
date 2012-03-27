@@ -17,7 +17,6 @@ Road Map
 --------
 - Configuration to use a Remote Server
 - Configuration to install a blank db on first run
-- Adhoc or recurring replication taking reachability into account 
 
 API Documentation
 -----------------
@@ -149,3 +148,12 @@ The `results` method returns a `NSArray` of `NSDictionary` instances. These can 
     NSLog(@"Request failed: %@", request.error)
 }
 ```
+
+#####Replication
+Three replication types are supported `ServerToClient`, `ClientToServer` and `BiDirectional`. Continuous replication can be used.
+
+
+``` objectivec
+[[ObjCradle default] replicate:@"http://me.iriscouch.com/mydatabase" replicationType:ServerToClient continous:YES];
+```
+
