@@ -20,7 +20,7 @@ Road Map
 
 API Documentation
 -----------------
-#####Installing an embedded database from `mydatabase.couch` file resource
+###Installing an embedded database from `mydatabase.couch` file resource
 
 ``` objectivec
 	
@@ -36,7 +36,7 @@ ObjCradle *couch = [[ObjCradle default] initWithDB:@"mydatabase"];
 }];
 ```
 
-#####Retrieving all documents
+###Retrieving all documents
 
 ``` objectivec
 	
@@ -44,7 +44,7 @@ ASIHTTPRequest *request= [[ObjCradle default] get:@"_all_docs"];
 NSLog(@"Results: %@", request.responseString);
 ```
 
-#####Retrieving documents from a view using a key
+###Retrieving documents from a view using a key
 
 ``` objectivec
 
@@ -52,7 +52,15 @@ ASIHTTPRequest *request = [[ObjCradle default] get:@"_design/category/_view/byPa
 NSLog(@"Results: %@", request.responseString);
 ```
 
-#####Selecting results as a custom class
+###Replication
+Three replication types are supported `ServerToClient`, `ClientToServer` and `BiDirectional`. Continuous replication can be used.
+
+
+``` objectivec
+[[ObjCradle default] replicate:@"http://me.iriscouch.com/mydatabase" replicationType:ServerToClient continous:YES];
+```
+
+###Selecting results as a custom class
 The `results` method returns a `NSArray` of `NSDictionary` instances. These can be exposed as a custom type:
 
 ######Item.h
@@ -110,7 +118,7 @@ The `results` method returns a `NSArray` of `NSDictionary` instances. These can 
 }
 ```
 
-#####Using the [ASIHTTPRequestDelegate](http://allseeing-i.com/ASIHTTPRequest/):
+###Using the [ASIHTTPRequestDelegate](http://allseeing-i.com/ASIHTTPRequest/):
 
 ######ItemsController.h
 
@@ -147,13 +155,5 @@ The `results` method returns a `NSArray` of `NSDictionary` instances. These can 
 - (void)requestFailed:(ASIHTTPRequest *)request {
     NSLog(@"Request failed: %@", request.error)
 }
-```
-
-#####Replication
-Three replication types are supported `ServerToClient`, `ClientToServer` and `BiDirectional`. Continuous replication can be used.
-
-
-``` objectivec
-[[ObjCradle default] replicate:@"http://me.iriscouch.com/mydatabase" replicationType:ServerToClient continous:YES];
 ```
 
