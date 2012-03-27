@@ -1,10 +1,10 @@
 ObjCradle
 =========
-A thin Objective C wrapper around CouchDB's REST api
+A thin Objective C wrapper around [CouchDB](http://couchdb.apache.org/)'s REST api
 
 Introduction
 ------------
-Inspired by the node.js [cradle](http://cloudhead.io/cradle) and [DotCradle](http://github.com/roryf/DotCradle) librares.
+Inspired by the node.js [cradle](http://cloudhead.io/cradle) and [DotCradle](http://github.com/roryf/DotCradle) librares. The CouchDB server is installed and configured using [Couchbase Mobile](https://github.com/couchbaselabs/iOS-Couchbase-manifest) and [CouchCocoa](https://github.com/couchbaselabs/CouchCocoa).
 
 I have been developing this as I create a prototype app to use an embedded CouchDB instance with pre-populated data. The embedded instance is then updated by (continuous) replication from a remote instance, updated by a simple CMS.
 
