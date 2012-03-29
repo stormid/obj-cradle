@@ -35,6 +35,11 @@ typedef enum {
 
 - (ASIHTTPRequest *)post:(NSString *)path withData:(NSDictionary *)data;
 
+- (ASIHTTPRequest *)post:(NSString *)path withData:(NSDictionary *)data requestDelegate:(id)requestDelegate;
+
+- (void)replicate:(NSString *)remoteDBUrl replicationType:(Replication)replicationType continous:(BOOL)continuous requestDelegate:(id)reqDelegate;
+
+
 - (void)replicate:(NSString *)remoteDBUrl replicationType:(Replication)replicationType continous:(BOOL)continuous;
 
 - (ASIHTTPRequest *)delete:(NSString *)path;

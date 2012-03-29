@@ -71,6 +71,10 @@ static ObjCradle *objCradle = nil;
     return [self sendRequest:path withData:data withMethod:@"POST" usingKey:nil requestDelegate:nil];
 }
 
+- (ASIHTTPRequest *)post:(NSString *)path withData:(NSDictionary *)data requestDelegate:(id)requestDelegate {
+    return [self sendRequest:path withData:data withMethod:@"POST" usingKey:nil requestDelegate:requestDelegate];
+}
+
 - (ASIHTTPRequest *)delete:(NSString *)path {
     return [self delete:path requestDelegate:nil];
 }
@@ -79,26 +83,30 @@ static ObjCradle *objCradle = nil;
     return [self sendRequest:path withData:nil withMethod:@"DELETE" usingKey:nil requestDelegate:requestDelegate];
 }
 
-- (void)sendReplicateRequest:(NSString *)source target:(NSString *)target continuous:(BOOL)continuous {
+- (void)sendReplicateRequest:(NSString *)source target:(NSString *)target continuous:(BOOL)continuous requestDelegate:(id)requestDelegate {
     NSMutableDictionary *data = [[[NSMutableDictionary alloc] init] autorelease];
     [data setValue:source forKey:@"source"];
     [data setValue:target forKey:@"target"];
     [data setObject:[NSNumber numberWithBool:continuous] forKey:@"continuous"];
-    ASIHTTPRequest *request = [self post:@"_replicate" withData:data];
+    ASIHTTPRequest *request = [self post:@"_replicate" withData:data requestDelegate:requestDelegate];
 }
 
 - (void)replicate:(NSString *)remoteDBUrl replicationType:(Replication)replicationType continous:(BOOL)continuous {
+    [self replicate:remoteDBUrl replicationType:replicationType continous:continuous requestDelegate:nil];
+}
+
+- (void)replicate:(NSString *)remoteDBUrl replicationType:(Replication)replicationType continous:(BOOL)continuous requestDelegate:(id)reqDelegate {
 
     switch (replicationType) {
         case ServerToClient:
-            [self sendReplicateRequest:remoteDBUrl target:_dbName continuous:continuous];
+            [self sendReplicateRequest:remoteDBUrl target:_dbName continuous:continuous requestDelegate:reqDelegate];
             break;
         case ClientToServer:
-            [self sendReplicateRequest:_dbName target:remoteDBUrl continuous:continuous];
+            [self sendReplicateRequest:_dbName target:remoteDBUrl continuous:continuous requestDelegate:reqDelegate];
             break;
         case BiDirectional:
-            [self sendReplicateRequest:_dbName target:remoteDBUrl continuous:continuous];
-            [self sendReplicateRequest:remoteDBUrl target:_dbName continuous:continuous];
+            [self sendReplicateRequest:_dbName target:remoteDBUrl continuous:continuous requestDelegate:reqDelegate];
+            [self sendReplicateRequest:remoteDBUrl target:_dbName continuous:continuous requestDelegate:reqDelegate];
             break;
     }
 }
