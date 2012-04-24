@@ -47,8 +47,8 @@ static ObjCradle *objCradle = nil;
         _dbName = dbName;
         installer = [[ObjCradleInstaller alloc] init];
         _server = [installer installCannedDb:dbName];
-        return self;
     }
+    return self;
 }
 
 - (ASIHTTPRequest *)get:(NSString *)path {
@@ -88,7 +88,7 @@ static ObjCradle *objCradle = nil;
     [data setValue:source forKey:@"source"];
     [data setValue:target forKey:@"target"];
     [data setObject:[NSNumber numberWithBool:continuous] forKey:@"continuous"];
-    ASIHTTPRequest *request = [self post:@"_replicate" withData:data requestDelegate:requestDelegate];
+    [self post:@"_replicate" withData:data requestDelegate:requestDelegate];
 }
 
 - (void)replicate:(NSString *)remoteDBUrl replicationType:(Replication)replicationType continous:(BOOL)continuous {
